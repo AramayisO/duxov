@@ -1,38 +1,41 @@
+:root {
+    --color-red: #D90012;
+    --color-blue: #0033A0;
+    --color-yellow: #F2A800;
+    --color-white: #FFFFFF;
+    --color-transparent: rgba(0, 0, 0, 0);
+    --color-overlay: rgba(0, 0, 0, 0.2);
+}
+
 .App {
-  text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, 
+                                var(--color-transparent) 0%, var(--color-transparent) 40%, 
+                                var(--color-red) calc(40% + 1px), var(--color-red) 50%, 
+                                var(--color-blue) calc(50% + 1px), var(--color-blue) 60%, 
+                                var(--color-yellow) calc(60% + 1px), var(--color-yellow) 70%,
+                                var(--color-transparent) calc(70% + 1px), var(--color-transparent) 100%);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.App::after {
+    /* Overlay */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-overlay);
+    z-index: 1;
+    /* Content */
+    content: 'Դուխով';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 200px;
+    color: var(--color-white);
+    text-shadow: 4px 4px 2px rgba(125, 125, 125, 1);
 }
