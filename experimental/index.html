@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        :root {
+            --color-transparent: rgba(0, 0, 0, 0);
+            --color-red: #D90012;
+            --color-blue: #0033A0;
+            --color-yellow: #F2A800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -2;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                                        var(--color-transparent) 0%, var(--color-transparent) 40%, 
+                                        var(--color-red) calc(40% + 1px), var(--color-red) 52%, 
+                                        var(--color-blue) calc(52% + 1px), var(--color-blue) 64%, 
+                                        var(--color-yellow) calc(64% + 1px), var(--color-yellow) 76%,
+                                        var(--color-transparent) calc(76% + 1px), var(--color-transparent) 100%);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-color: rgba(0, 0, 0, 0.2);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 200px;
+            text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+        }
+
+    </style>
+</head>
+<body>
+    <header></header>
+    <div class="overlay">
+        <span class="overlay_text">Դուխով</span>
+    </div>
+    <!-- Hack to allow audio autoplay from StackOverflow answer https://stackoverflow.com/questions/50490304/how-to-make-audio-autoplay-on-chrome -->
+    <iframe src="https://raw.githubusercontent.com/anars/blank-audio/master/250-milliseconds-of-silence.mp3" allow="autoplay" id="audio" style="display: none"></iframe>
+    <button id="playBtn">Play</button>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=AudioContext"></script>
+    <script src="script.js"></script>
+</body>
+</html>
