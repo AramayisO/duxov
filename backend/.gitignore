@@ -1,0 +1,9 @@
+# IDE specific config files
+.vscode/
+
+# Virtual environment
+venv/
+
+# Compiled and cached Python files
+__pycache__/
+**/*.pyc
