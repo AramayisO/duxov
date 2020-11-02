@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import Response
 
+from app.core.config import AppConfig
 from app.core.api import api_router
 
 # Create the ASGI for the app
