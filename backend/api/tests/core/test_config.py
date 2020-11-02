@@ -20,3 +20,11 @@ def test_aws_keys_are_secret():
     """
     assert type(AppConfig.AWS_ACCESS_KEY_ID) == Secret
     assert type(AppConfig.AWS_SECRET_ACCESS_KEY) == Secret
+
+
+def test_s3_config():
+    """
+    Test that global config object has the necessary config vars for AWS S3.
+    """
+    assert AppConfig.S3_BUCKET_NAME is not None
+    assert AppConfig.S3_BUCKET_NAME.strip() != ""
