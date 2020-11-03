@@ -28,3 +28,11 @@ def test_s3_config():
     """
     assert AppConfig.S3_BUCKET_NAME is not None
     assert AppConfig.S3_BUCKET_NAME.strip() != ""
+
+
+def test_redis_config():
+    """
+    Test that global config object has the required Redis config vars.
+    """
+    assert AppConfig.REDIS_HOST is not None
+    assert AppConfig.REDIS_PORT is not None
