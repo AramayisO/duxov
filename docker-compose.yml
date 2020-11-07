@@ -5,3 +5,21 @@ services:
     redis:
         container_name: redis
         image: redis:6-alpine
+
+    api:
+        container_name: api
+        build:
+            context: ./backend/api
+            dockerfile: Dockerfile
+        environment:
+            # These should be defined as environement variables on the machine
+            # on which docker-compose will be used to build the image. 
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_DEFAULT_REGION
+            - S3_BUCKET_NAME
+        ports: 
+            - "8000:8000"
+        volumes:
+            - "./backend/api/app:/usr/src/app"
+        command: uvicorn app.main:app --host 0.0.0.0 --reload
