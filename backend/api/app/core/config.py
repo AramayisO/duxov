@@ -16,3 +16,6 @@ class AppConfig:
     # Redis cache config
     REDIS_HOST = config("REDIS_HOST", cast=str, default="127.0.0.1")
     REDIS_PORT = config("REDIS_PORT", cast=int, default=6379)
+
+    # DB Tabels
+    MUSIC_TABLE_NAME = config("MUSIC_TABLE_NAME", cast=str, default="")

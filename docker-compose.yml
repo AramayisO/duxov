@@ -12,12 +12,11 @@ services:
             context: ./backend/api
             dockerfile: Dockerfile
         environment:
-            # These should be defined as environement variables on the machine
-            # on which docker-compose will be used to build the image. 
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
-            - AWS_DEFAULT_REGION
-            - S3_BUCKET_NAME
+            - AWS_DEFAULT_REGION=us-west-2
+            - S3_BUCKET_NAME=duxov.live
+            - MUSIC_TABLE_NAME=duxov.live.music
             - REDIS_HOST=redis
             - REDIS_PORT=6379
         ports: 
