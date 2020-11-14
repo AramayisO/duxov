@@ -120,10 +120,10 @@ class OpusParser:
             packet.write(self.__buffer[self.__comment_page.offset : self.__comment_page.offset + self.__comment_page.length])
             packet.write(self.__buffer[first_page.offset : last_page.offset + last_page.length])
             packet.seek(0)
-            yield packet.getbuffer()
+            yield packet
 
 
-    def get_next_packet(self) -> Union[bytes, None]:
+    def get_next_packet(self) -> Union[io.BytesIO, None]:
         try:
             packet = next(self.__packet_iter)
         except TypeError:

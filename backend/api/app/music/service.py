@@ -1,23 +1,24 @@
 import io
+import pickle
 from typing import List
 
-import boto3
-
+from app.core.aws import session
 from app.core.config import AppConfig
-from app.music.models import Song
+from app.music.models import Song, SongPacket
 from app.cache.service import CacheService
 from app.storage.service import StorageService
+from app.opus.parser import OpusParser
 
 
-class MusicService:
+class SongService:
 
-    __dynamodb = boto3.resource('dynamodb')
+    __dynamodb = session.resource('dynamodb')
     __table = __dynamodb.Table(AppConfig.MUSIC_TABLE_NAME)
     __song_iter = None
 
 
     @classmethod
-    def __get_song_iterator(cls) -> Song:
+    def __get_song_iterator(cls):
         last_evaluated_key = None
         response = cls.__table.scan(Limit=1, Select="ALL_ATTRIBUTES")
 
@@ -35,7 +36,7 @@ class MusicService:
 
 
     @classmethod
-    def __get_next_song(cls):
+    def __get_next_song(cls) -> Song:
         try:
             song = next(cls.__song_iter)
         except (StopIteration, TypeError):
@@ -45,19 +46,36 @@ class MusicService:
 
 
     @classmethod
-    def __get_song_byte_stream(cls, song: Song) -> io.BytesIO:
-        stream = CacheService.get(song.filename)
-        
-        if stream is not None:
-            return stream
-        
-        try:
-            stream = StorageService.get_byte_stream(f"music/{song.filename}")
-            CacheService.set(song.filename, stream.read())
-            stream.seek(0)
-        except FileNotFoundError as error:
-            print(error)
-            raise
+    def __get_song_bytes(cls, song: Song) -> bytes:
+        buffer = CacheService.get(song.filename)
 
-        return stream
-            
+        if buffer is None:
+            stream = StorageService.get_byte_stream(f"music/{song.filename}")
+            buffer = stream.getbuffer()
+            CacheService.set(song.filename, buffer)
+        
+        return buffer
+
+
+    @classmethod
+    def preload_next_song(cls):
+        seq_max = int(CacheService.get("seq_max")) or 0
+        seq_base = int(CacheService.get("seq_base")) or 0
+
+        song = cls.__get_next_song()
+        buffer = cls.__get_song_bytes(song)
+        parser = OpusParser(buffer)
+
+        seq_base = seq_max + 1
+
+        while packet := parser.get_next_packet():
+            seq_max += 1
+            CacheService.set(
+                f"song:packet:{seq_max}", 
+                pickle.dumps(
+                    SongPacket(**song.dict(), buffer=packet.read())
+                )
+            )
+
+        CacheService.set("seq_base", seq_base)
+        CacheService.set("seq_max", seq_max)

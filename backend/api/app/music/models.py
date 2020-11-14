@@ -10,3 +10,7 @@ class SongBase(BaseModel):
 
 class Song(SongBase):
     filename: str
+
+
+class SongPacket(Song):
+    buffer: bytes
