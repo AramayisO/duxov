@@ -10,12 +10,10 @@ class JobQueue:
     __queue = Queue(connection=__redis)
     __worker = Worker(["default"], connection=__redis)
 
+    @classmethod
+    def enqueue(cls, func, *args, **kwargs):
+        cls.__queue.enqueue(func, *args, **kwargs)
 
     @classmethod
-    def init_workers(cls):
+    def start_worker(cls):
         cls.__worker.work()
-
-
-    @classmethod
-    def enqueue(cls, func, *args):
-        cls.__queue.enqueue(func, *args)

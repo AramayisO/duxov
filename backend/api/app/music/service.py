@@ -4,6 +4,7 @@ from typing import List
 
 from app.core.aws import session
 from app.core.config import AppConfig
+from app.core.queue import JobQueue
 from app.music.models import Song, SongPacket
 from app.cache.service import CacheService
 from app.storage.service import StorageService
@@ -59,8 +60,8 @@ class SongService:
 
     @classmethod
     def preload_next_song(cls):
-        seq_max = int(CacheService.get("seq_max")) or 0
-        seq_base = int(CacheService.get("seq_base")) or 0
+        seq_max = int(CacheService.get("seq_max") or 0)
+        seq_base = int(CacheService.get("seq_base") or 0)
 
         song = cls.__get_next_song()
         buffer = cls.__get_song_bytes(song)
@@ -79,3 +80,27 @@ class SongService:
 
         CacheService.set("seq_base", seq_base)
         CacheService.set("seq_max", seq_max)
+
+
+    @classmethod
+    def init(cls):
+        if not int(CacheService.get("seq_max") or 0):
+            JobQueue.enqueue(SongService.preload_next_song)
+
+
+class MusicService:
+
+    @staticmethod
+    def get_next_audio_packet(seq: int = None):
+        seq_base = int(CacheService.get("seq_base"))
+        seq_max = int(CacheService.get("seq_max"))
+        
+        if not seq:
+            seq = seq_base
+
+        if seq > (seq_max - 10):
+            JobQueue.enqueue(SongService.preload_next_song)
+        
+        packet = pickle.loads(CacheService.get(f"song:packet:{seq}"))
+
+        return packet

@@ -3,6 +3,8 @@ from fastapi.openapi.docs import get_redoc_html
 from fastapi.openapi.utils import get_openapi
 from starlette.responses import JSONResponse
 
+import app.music.router as music
+
 api_router = APIRouter(default_response_class=JSONResponse)
 doc_router = APIRouter()
 
@@ -32,3 +34,4 @@ async def get_api_docs():
 
 
 api_router.include_router(doc_router, prefix="/docs")
+api_router.include_router(music.router, prefix="/music")
